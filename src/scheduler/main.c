@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "../file_manager/manager.h"
+#include "../process/process.h"
 
 int main(int argc, char **argv)
 {
@@ -16,4 +17,5 @@ int main(int argc, char **argv)
         "\tProcess %s from factory %s has init time of %s and %s bursts.\n",
         line[0], line[2], line[1], line[3]);
   }
+  
 }
