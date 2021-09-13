@@ -11,6 +11,7 @@ typedef struct linkedlist{
 
 LinkedList* linkedlist_init();
 void append_linkedlist(LinkedList* linkedlist, Process* process);
+void append_first(LinkedList* linkedlist, Process* process);
 
 //void process_destroy(Process* process);
 //void iterate_linkedlist( LinkedList* linkedlist);
