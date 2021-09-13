@@ -11,10 +11,12 @@ typedef struct process Process;
 struct process{
     int pid;
     char* name;
-    int name_factory;
+    int id_factory;
     char* state;
+    int time_start;
     Process* next;
+    int quantum;
 };
 
-Process* process_init(int pid, char* name, int name_factory);
+Process* process_init(int pid, char* name, int id_factory, int time_start);
 //void process_destroy(Process* process);

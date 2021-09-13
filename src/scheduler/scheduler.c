@@ -14,6 +14,7 @@ void append_linkedlist(LinkedList* linkedlist, Process* process){
 }
 
 void append_first(LinkedList* linkedlist, Process* process){
+    printf("apprend firrst\n");
     linkedlist->tail->next = process;
     linkedlist->tail = process;
     linkedlist->head = process;
