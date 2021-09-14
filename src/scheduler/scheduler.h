@@ -4,12 +4,14 @@
 typedef struct linkedlist{
     Process* head;
     Process* tail; 
+    int total_factories;
+    int f_en_cola[];    
 }LinkedList;
 
 
 
 
-LinkedList* linkedlist_init();
+LinkedList* linkedlist_init(int total_factories);
 void append_linkedlist(LinkedList* linkedlist, Process* process);
 void append_first(LinkedList* linkedlist, Process* process);
 
