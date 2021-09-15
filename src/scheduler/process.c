@@ -1,11 +1,5 @@
 
 #include "process.h"
-typedef enum {
-  RUNNING,
-  READY,
-  WAITING,
-  FINISHED
-  } STATES;
 
 Process* process_init(int pid, char* name, int id_factory, int time_start){
     Process* process = malloc(sizeof(Process));
@@ -16,6 +10,6 @@ Process* process_init(int pid, char* name, int id_factory, int time_start){
     process->next = NULL;
     process->time_start = time_start;
     process->quantum = 0;
-
+    
     return process;
 }
