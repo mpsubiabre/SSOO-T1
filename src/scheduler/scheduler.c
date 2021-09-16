@@ -18,7 +18,7 @@ void append_linkedlist(LinkedList* linkedlist, Process* process){
 }
 
 void append_first(LinkedList* linkedlist, Process* process){
-    linkedlist->tail->next = process;
+    linkedlist->tail->next = NULL;
     linkedlist->tail = process;
     linkedlist->head = process;
 }
@@ -94,6 +94,9 @@ void delete_process(LinkedList* linkedlist ,Process* current){
 
 Process* delete_process_pachi(LinkedList* linkedlist ,Process* current){
     printf("entre a la funcion delete proces pachi con current %s , cabeza %s y cola %s\n", current-> name, linkedlist->head->name, linkedlist->tail->name);
+    if(current->next!=NULL){
+        printf("Nombre del proceso %s y su siguiente %s\n", current->name, current->next->name);
+    }
     // es el primer nodo de la lista
     if(linkedlist->head == current)
     {
@@ -102,11 +105,13 @@ Process* delete_process_pachi(LinkedList* linkedlist ,Process* current){
         {
            printf("solo hay un nodo\n");
            linkedlist->head = NULL; //la dejo vacia
+           current->next = NULL;
            return current; 
         }
         //hay mas de un nodo
         printf("hay mas de un nodo\n");
         linkedlist->head = linkedlist->head->next;// la cabeza ahora es el hermano de la cabeza original
+        current->next = NULL;
         return current;
     }
     // No es el primer nodo
@@ -120,9 +125,11 @@ Process* delete_process_pachi(LinkedList* linkedlist ,Process* current){
     printf("sali del while\n");
     if(nodo->next == NULL){
         //NO esta presente en la lista
+
         return current;
     }
     nodo->next = nodo->next->next;
     //free(current); maybe free nodo
+    current->next = NULL;
     return current;
 }
