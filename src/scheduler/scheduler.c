@@ -92,8 +92,6 @@ void delete_process(LinkedList* linkedlist ,Process* current){
     return;
 }
 
-
-
 Process* delete_process_pachi(LinkedList* linkedlist ,Process* current){
     printf("entre a la funcion delete proces pachi con current %s , cabeza %s y cola %s\n", current-> name, linkedlist->head->name, linkedlist->tail->name);
     // es el primer nodo de la lista
