@@ -5,7 +5,10 @@ LinkedList* linkedlist_init(int total_factories){
     LinkedList* linkedlist = malloc(sizeof(LinkedList));
     //linkedlist->head = NULL;
     //linkedlist->tail = NULL;
-    total_factories = total_factories;
+    linkedlist-> total_factories = total_factories;
+    for (int i = 0; i < 4; i++){
+        linkedlist -> lista_n_procesos_fabricas[i] = 0;
+    }
     return linkedlist;
 }
 
@@ -87,4 +90,39 @@ void delete_process(LinkedList* linkedlist ,Process* current){
     prev->next = prev->next->next;
     free(current);
     return;
+}
+
+Process* delete_process_pachi(LinkedList* linkedlist ,Process* current){
+    printf("entre a la funcion delete proces pachi con current %s , cabeza %s y cola %s\n", current-> name, linkedlist->head->name, linkedlist->tail->name);
+    // es el primer nodo de la lista
+    if(linkedlist->head == current)
+    {
+        printf("es el primer nodo de la lista\n");
+        if(linkedlist->head->next == NULL)//SOLO HAY UN NODO
+        {
+           printf("solo hay un nodo\n");
+           linkedlist->head = NULL; //la dejo vacia
+           return current; 
+        }
+        //hay mas de un nodo
+        printf("hay mas de un nodo\n");
+        linkedlist->head = linkedlist->head->next;// la cabeza ahora es el hermano de la cabeza original
+        return current;
+    }
+    // No es el primer nodo
+    printf("no es el primer nodo\n");
+    Process* nodo = linkedlist->head;
+    while (nodo->next != NULL && nodo->next!=current)
+    {   
+        printf("entre al while\n");
+        nodo = nodo->next;
+    }
+    printf("sali del while\n");
+    if(nodo->next == NULL){
+        //NO esta presente en la lista
+        return current;
+    }
+    nodo->next = nodo->next->next;
+    //free(current); maybe free nodo
+    return current;
 }
