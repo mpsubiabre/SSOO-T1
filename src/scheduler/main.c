@@ -25,7 +25,6 @@ void global_clock(){
   sleep(1);
   timer++;
   printf("paso unidad de tiempo, ahora son las %i\n", timer);
-  
 }
 
 void calcular_quantum(LinkedList* linkedlist,Process* proceso){
@@ -109,7 +108,6 @@ void nueva_cpu(Process* head, Process* cpu){
   cpu->turnaround_time = turnaround_time;
   cpu->wainting_time = wainting_time;
   //cpu->rafagas[9999]=rafagas;
-
 }
 
 
@@ -183,6 +181,7 @@ void prioridad_procesos(Process *argv[], int j, LinkedList* linkedlist){
   print_linkedlist(linkedlist);
   printf("cola: %s\n",linkedlist->tail->name);
   }
+
 // cuando CPU es null
 void ingresar_cpu(LinkedList* linkedlist){
 
@@ -327,15 +326,15 @@ int main(int argc, char **argv)
     linkedlist->f_en_cola[i]=0;
     quantum_factories[i]=0;
   }
-  
-  while(true){
 
+  while(true){
+    // 1. Revisar si hay algo en cpu
     if (cpu != NULL)
     {
       printf("actualmente en la cpu esta el %s\n", cpu->name);
       cpu_estado(cpu);
     }
-  
+    // 2. Procesos creados entran en cola y tambien el que salio de cpu
     // aca de revisa si es tiempo de que llegue a la cola algun proceso
     int len = sizeof(lista_procesos)/sizeof(Process*);
     //printf("------------------------review------------------\n");
@@ -353,15 +352,18 @@ int main(int argc, char **argv)
     for (int i = 0; i < total_factories+1; i++){
       printf("f en cola %i\n", linkedlist->f_en_cola[i]);
     }
+    // 3. No hay proceso en cpu
     if (cpu==NULL)
     {
+      printf("No hay nada en Cpu\n");
       ingresar_cpu(linkedlist);
-
     }
-
-   
-
+    /* 4. Se actualizan las estadisticas de los procesos. Si un proceso 
+    salió de cpu, se considera como si hubiera estado en running*/
     
+    // 5. Los procesos WAITING que terminaron su I/O Burst (Bi) pasan a READY.
+    
+        
     global_clock();
   }
 }
