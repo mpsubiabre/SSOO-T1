@@ -11,5 +11,6 @@ Process* process_init(int pid, char* name, int id_factory, int time_start){
     process->time_start = time_start;
     process->quantum = 0;
     process->t_entrada_cpu = 0;
+    process->puntero_rafaga = 0;
     return process;
 }

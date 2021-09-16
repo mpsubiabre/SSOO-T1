@@ -5,7 +5,10 @@ LinkedList* linkedlist_init(int total_factories){
     LinkedList* linkedlist = malloc(sizeof(LinkedList));
     //linkedlist->head = NULL;
     //linkedlist->tail = NULL;
-    total_factories = total_factories;
+    linkedlist-> total_factories = total_factories;
+    for (int i = 0; i < 4; i++){
+        linkedlist -> lista_n_procesos_fabricas[i] = 0;
+    }
     return linkedlist;
 }
 
@@ -87,4 +90,34 @@ void delete_process(LinkedList* linkedlist ,Process* current){
     prev->next = prev->next->next;
     free(current);
     return;
+}
+
+
+
+Process* delete_process_pachi(LinkedList* linkedlist ,Process* current){
+    // es el primer nodo de la lista
+    if(linkedlist->head == current)
+    {
+        if(linkedlist->head->next == NULL)//SOLO HAY UN NODO
+        {
+           linkedlist->head = NULL; //la dejo vacia
+           return current; 
+        }
+        //hay mas de un nodo
+        linkedlist->head = linkedlist->head->next;// la cabeza ahora es el hermano de la cabeza original
+        return current;
+    }
+    // No es el primer nodo
+    Process* nodo = linkedlist->head;
+    while (nodo->next != NULL && nodo->next!=current)
+    {
+        nodo = nodo->next;
+    }
+    if(nodo->next == NULL){
+        //NO esta presente en la lista
+        return current;
+    }
+    nodo->next = nodo->next->next;
+    //free(current); maybe free nodo
+    return current;
 }

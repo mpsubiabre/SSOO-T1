@@ -23,8 +23,19 @@ struct process{
     int time_start;
     Process* next;
     int quantum;
-    //int rafagas[];
     int t_entrada_cpu;
+    int veces_interrupcion_quantum;
+    int veces_elegido_cpu;
+    int puntero_rafaga;
+    int numero_ai;
+    int numero_rafagas;
+    int delta;
+    //tiempo en sistema inicio a fin
+    int turnaround_time;
+    // tiempo en ready y waiting
+    int wainting_time;
+
+    int rafagas[9999];
 };
 
 Process* process_init(int pid, char* name, int id_factory, int time_start);
