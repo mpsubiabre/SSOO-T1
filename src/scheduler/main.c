@@ -16,6 +16,7 @@ int total_factories = 0 ;
 bool primero = false; //permite saber si es el priemro en entrar a la cola
 int numero_fabricas_cola = 0;
 int quantum_factories[4];
+bool proceso_nuevo = false;
 Process* cpu=NULL;
 LinkedList* terminados;
 
@@ -70,8 +71,10 @@ int revisar_entrada_nuevos_procesos(Process** lista_procesos, Process** lista_pr
       printf("[t = %i] se ha creado el proceso %s\n", timer, lista_procesos[i]->name);
       lista_procesos_entrando[j] = lista_procesos[i];
       j++;
+      proceso_nuevo = true;
     }
   }
+  printf("SALI DE REVISAR ENTRADA NUEVSprocesos\n");
   return j;
 }
 
@@ -82,7 +85,11 @@ void prioridad_procesos(Process *argv[], int j, LinkedList* linkedlist){
   if (j == 0){
     return;
   }
-
+  printf("J ES :%i\n", j);
+  for (int i = 0; i < j; i++){
+    printf("lista_procesos entrando antes : \n");
+    printf("%s\n", argv[i]->name);
+  }
   if ((j == 1 && primero == false)|| linkedlist->head==NULL){
     printf("primerisimo\n");
     primero = true;
@@ -142,14 +149,25 @@ void prioridad_procesos(Process *argv[], int j, LinkedList* linkedlist){
     }
     
   } 
+  
   printf("inicio:%s\n",linkedlist->head->name);
   printf("Estado:%d\n",linkedlist->head->state);
   //print_linkedlist(linkedlist);
   printf("cola: %s\n",linkedlist->tail->name);
+  printf(" PRINTEANDO J : %i\n", j);
+  for (int i = 0; i < j; i++){
+    printf("lista_procesos entrando antes : \n");
+    printf("%s", argv[i]->name);
+    argv[i] = NULL;
+    printf("lista_procesos entrando despues : \n");
+  }
+  proceso_nuevo = false;
+
   }
 
 // cuando CPU es null
 Process* ingresar_cpu(LinkedList* linkedlist, Process* cpu){
+  cpu->tiempo_entrada_waiting=0;
   if (linkedlist->head ==NULL)
   {
     printf("No quedan elementos en la cola\n");
@@ -174,6 +192,7 @@ Process* ingresar_cpu(LinkedList* linkedlist, Process* cpu){
     //ingresar el tiempo en que entro a cpu
     cpu->t_entrada_cpu=timer;
     calcular_quantum(linkedlist, cpu);
+    cpu->next = NULL;
     return cpu;
   }
   //El primer nodo no esta ready se busca el primero que este en ready
@@ -192,6 +211,7 @@ Process* ingresar_cpu(LinkedList* linkedlist, Process* cpu){
       printf("el estado del proceso paso a %d\n", cpu->state);
       cpu->t_entrada_cpu=timer;
       calcular_quantum(linkedlist, cpu);
+      cpu->next = NULL;
       return cpu;
     }
     curr=curr->next;
@@ -219,7 +239,7 @@ void waiting_to_ready(LinkedList* linkedlist){
       printf("\t El puntero de la rafaga es: %i", curr->puntero_rafaga);
       int bi = curr->rafagas[curr->puntero_rafaga-1];
       printf("\tEl tiempo bi es %i\n", bi);
-      if(tiempo_en_waiting ==bi ){
+      if(tiempo_en_waiting == bi ){
         printf("\tLos tiempos son iguales\n");
         curr->state=READY;
         curr->tiempo_entrada_waiting=0;
@@ -239,6 +259,7 @@ void cpu_estado(Process* cpu){
     if (cpu->puntero_rafaga + 1 == cpu->numero_rafagas){// es el ultimo ai por lo tanto termina
       printf("[t = %i] %s PASO A ESTADO FINISH\n", timer, cpu->name);
       cpu->state = FINISHED;
+      append_linkedlist(terminados, cpu);
       printf("[t = %i] Saldra de cpu_Estado el %s en estado %i\n", timer, cpu->name, cpu->state);
       return;
     }
@@ -327,16 +348,30 @@ int main(int argc, char **argv)
     //printf("------------------------review------------------\n");
     j = revisar_entrada_nuevos_procesos(lista_procesos, lista_procesos_entrando, j, len);
     //printf("------------------------review------------------\n");
-     if (cpu!=NULL)
+    if (cpu!=NULL)
     {
       if(cpu->state == WAITING || cpu->state == READY)
       {
         Process* nuevo = cpu;
         nuevo->next=NULL;
-        lista_procesos_entrando[j+1]=nuevo;
-        printf("Name de la proceso en cpu %s \n",lista_procesos_entrando[j+1]->name);
+        if(proceso_nuevo){
+          printf("NO es nulo cpu\n");
+          lista_procesos_entrando[j+1]=nuevo;
+          j++;
+        }
+        else
+        {
+          printf("J0 es %i\n", j);
+          //j=1;
+          printf("ENTRE AL ELSE \n");
+          printf("nombre nuevo es %s\n", nuevo->name);
+          lista_procesos_entrando[j]=nuevo;
+          j++;
+          //proceso_nuevo = false;
+        }
+        //printf("Name de la proceso en cpu %s \n",lista_procesos_entrando[j]->name);
         printf("se añadio a lista entrando el proceso que salio de cpu\n");
-        j++;
+        
         printf("CPU ahora esta vacio\n");
         cpu=NULL;
       }
@@ -350,6 +385,7 @@ int main(int argc, char **argv)
     if (cpu==NULL)
     {
       printf("No hay nada en Cpu\n");
+      printf("HEAD ES %s\n",linkedlist->head->name);
       printf("Cabeza de la lista ligada %s y su estado %i\n", linkedlist->head->name, linkedlist->head->state);
       if(linkedlist->head->next!=NULL){
         printf("siguietne lista ligada  %s\n", linkedlist->head->next->name);

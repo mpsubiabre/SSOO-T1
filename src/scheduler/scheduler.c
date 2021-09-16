@@ -13,12 +13,15 @@ LinkedList* linkedlist_init(int total_factories){
 }
 
 void append_linkedlist(LinkedList* linkedlist, Process* process){
+    printf("ESTOY AÑADIENDO %s\n", process->name);
+    process->next = NULL;
     linkedlist->tail->next = process;
     linkedlist->tail = process;    
 }
 
 void append_first(LinkedList* linkedlist, Process* process){
-    linkedlist->tail->next = NULL;
+    process->next = NULL;
+    linkedlist->tail->next = process;
     linkedlist->tail = process;
     linkedlist->head = process;
 }
@@ -111,6 +114,10 @@ Process* delete_process_pachi(LinkedList* linkedlist ,Process* current){
         //hay mas de un nodo
         printf("hay mas de un nodo\n");
         linkedlist->head = linkedlist->head->next;// la cabeza ahora es el hermano de la cabeza original
+        if(linkedlist->head->next!=NULL){
+            linkedlist->head->next=linkedlist->head->next->next; 
+        }
+        
         current->next = NULL;
         return current;
     }
