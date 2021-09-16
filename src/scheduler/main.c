@@ -28,8 +28,13 @@ void global_clock(){
   
 }
 
-void calcular_quantum(LinkedList* linkedlist){
+void calcular_quantum(LinkedList* linkedlist,Process* proceso){
   printf("----entre a calcular qum\n");
+  int id_fabrica = proceso->id_factory;
+  printf(" variables calculo quantum:\n");
+  printf("Q: %i\n", Q);
+  printf("ni: %i\n", linkedlist->f_en_cola[id_fabrica]);
+  printf("f: %i\n", numero_fabricas_cola);
   for (int i = 0; i < total_factories+1; i++){
     printf(" variables calculo quantum:\n");
     printf("Q: %i\n", Q);
@@ -62,7 +67,6 @@ int revisar_entrada_nuevos_procesos(Process** lista_procesos, Process** lista_pr
 
 void prioridad_procesos(Process *argv[], int j, LinkedList* linkedlist){
   printf("entre a funcion prioridad con numero %i de procesos\n", j);
-
   if (j == 1 && primero == false){
     printf("primerisimo\n");
     primero = true;
@@ -138,10 +142,13 @@ void ingresar_cpu(LinkedList* linkedlist){
     printf("Se elimina de la cola el proceso\n");
     cpu->state = RUNNING;
     printf("el estado del proceso paso a %d\n", cpu->state);
+    //ingresar el tiempo en que entro a cpu
+    cpu->t_entrada_cpu=timer;
+    calcular_quantum(linkedlist);
     return;
   }
   //El primer nodo no esta ready se busca el primero que este en ready
-  Process* curr =  linkedlist->head;
+  Process* curr =  linkedlist->head->next;
   while (curr)
   {
     if (curr->state==READY)
@@ -152,17 +159,32 @@ void ingresar_cpu(LinkedList* linkedlist){
       printf("Se elimina de la cola el proceso\n");
       cpu->state = RUNNING;
       printf("el estado del proceso paso a %d\n", cpu->state);
+      calcular_quantum(linkedlist);
       return;
     }
     curr=curr->next;
   }
+  printf("No hay proceso en estado READY en cola\n");
 }
 
+// void waiting_to_ready(LinkedList* linkedlist){
+//   Process* curr =  linkedlist->head;
+//   while (curr)
+//   {
+//     if (curr->state==WAITING)
+//     {
+//       curr->state=READY;
+//     }
+//     curr=curr->next;
+//   }
+// }
+
 // cuando CPU no es null
-// void cpu_estado(Process* cpu1){
-//  if (tiempo-tiempoincio == time burst[numero de interrupcion])
+//void cpu_estado(Process* cpu1){
+//  if (timer-cpu1->t_entrada_cpu == cpu1->timeburst[numero de interrupcion])
 //  {
 //    cpu->state == WAITING;
+//    printf("[t = %i] ")
 //    //poner al final de la cola
 //    append_linkedlist(linkedlist, cpu);
 //    //CPU debe volver a estar vacio
@@ -175,7 +197,17 @@ void ingresar_cpu(LinkedList* linkedlist){
 //     append_linkedlist(terminados, cpu);
 //     cpu=NULL;
 //  }
-
+//  else if (timer-cpu1->t_entrada_cpu = cpu1->quantum)
+//  {
+//     cpu->state = READY;
+//     append_linkedlist(linkedlist, cpu);
+//     // agregar el tiempo que se ocupo para las interrupciones
+//     cpu=NULL;
+//  }
+//  else
+//  {
+//     //Continua running y se suma 1 al tiempo.
+//  }
 
     
   
@@ -191,7 +223,7 @@ int main(int argc, char **argv)
 
   Process* lista_procesos[file->len];
   Process* lista_procesos_entrando[file->len];
-
+  
   for (int i = 0; i < file->len; i++)
   {
     char **line = file->lines[i];
@@ -208,7 +240,7 @@ int main(int argc, char **argv)
     // printf("%s \n", line[0]);
     // printf("Time start %i \n",time_start);
     Process* process = process_init(pid, name, id_factory, time_start);
-    // //aca se guardan los procesos para iterarlos luego
+    // //aca se guardan los tiempos Ai, Bi del proceso para iterarlos luego 
     // int k=1;
     // for (int i = 0; i < n_rafagas*2-1; i++)
     // {
@@ -242,16 +274,15 @@ int main(int argc, char **argv)
     printf("------------------------review------------------\n");
     j = revisar_entrada_nuevos_procesos(lista_procesos, lista_procesos_entrando, j, len);
     printf("------------------------review------------------\n");
-    if (cpu==NULL)
-    {
-      ingresar_cpu(linkedlist);
-    }
     
     prioridad_procesos(lista_procesos_entrando, j, linkedlist);
     for (int i = 0; i < total_factories+1; i++){
       printf("f en cola %i\n", linkedlist->f_en_cola[i]);
     }
-    calcular_quantum(linkedlist);
+    if (cpu==NULL)
+    {
+      ingresar_cpu(linkedlist);
+    }
     global_clock();
   }
 

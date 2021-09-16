@@ -55,6 +55,7 @@ void delete_process(LinkedList* linkedlist ,Process* current){
         if(head->next == NULL)
         {
            //SOLO HAY UN NODO
+           //Falta borrarlo
            return; 
         }
         /*Se copia la info del nodo siguiente al head*/
@@ -64,6 +65,7 @@ void delete_process(LinkedList* linkedlist ,Process* current){
         head->quantum=head->next->quantum;
         head->state=head->next->state;
         head->time_start=head->next->time_start;
+        //agregar atributos
         /*Se guarda la direccion*/
         current = head->next;
         //Se remueve el link del siguiente nodo
