@@ -194,12 +194,12 @@ void ingresar_cpu(LinkedList* linkedlist){
   // Si la El primer proceso esta Ready entra a cpu
   if (linkedlist->head->state == READY)
   {
-    cpu = linkedlist->head;
+    printf("usare la nueva funcion delete!!!!!!!!!!\n");
+    cpu = delete_process_pachi(linkedlist,linkedlist->head);
     printf("Entra a CPU el proceso %s\n", cpu->name);
     int id_fabrica_current = cpu -> id_factory;
     linkedlist->lista_n_procesos_fabricas[cpu->id_factory]--;
 
-    delete_process(linkedlist, cpu);
     
 
     printf("Se elimina de la cola el proceso\n");
@@ -216,11 +216,11 @@ void ingresar_cpu(LinkedList* linkedlist){
   {
     if (curr->state==READY)
     {
-      cpu = linkedlist->head;
+      printf("usare la nueva funcion delete!!!!!!!!!!\n");
+      cpu = delete_process_pachi(linkedlist, curr);
       printf("Entra a CPU el proceso %s\n", cpu->name);
       int id_fabrica_current = cpu -> id_factory;
       linkedlist->lista_n_procesos_fabricas[cpu->id_factory]--;
-      delete_process(linkedlist, cpu);
       printf("Se elimina de la cola el proceso\n");
       cpu->state = RUNNING;
       printf("el estado del proceso paso a %d\n", cpu->state);

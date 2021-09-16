@@ -22,5 +22,6 @@ void print_linkedlist(LinkedList* linkedlist);
 void destroy_linkedlist(LinkedList* linkedlist);
 //Esta funcion elimina un proceso
 void delete_process(LinkedList* linkedlist ,Process* process);
+Process* delete_process_pachi(LinkedList* linkedlist ,Process* process);
 //void iterate_linkedlist( LinkedList* linkedlist);
 //Process* pop_process(LinkedList* linkedlist, Process* process);
