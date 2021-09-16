@@ -144,7 +144,7 @@ void ingresar_cpu(LinkedList* linkedlist){
     printf("el estado del proceso paso a %d\n", cpu->state);
     //ingresar el tiempo en que entro a cpu
     cpu->t_entrada_cpu=timer;
-    calcular_quantum(linkedlist);
+    calcular_quantum(linkedlist, cpu);
     return;
   }
   //El primer nodo no esta ready se busca el primero que este en ready
@@ -223,7 +223,6 @@ int main(int argc, char **argv)
 
   Process* lista_procesos[file->len];
   Process* lista_procesos_entrando[file->len];
-  
   for (int i = 0; i < file->len; i++)
   {
     char **line = file->lines[i];
@@ -264,11 +263,16 @@ int main(int argc, char **argv)
   }
   
   while(true){
-    if (cpu == NULL)
-    {
-      printf("No hay nada en Cpu\n");
+    // 1. Revisar si hay algo en cpu
+    if (cpu!=NULL){
+      print("Hay un proceso en CPU");
     }
-  
+    // 2. Procesos creados entran en cola y tambien el que salio de cpu
+    // 3. No hay proceso en cpu
+    /* 4. Se actualizan las estadisticas de los procesos. Si un proceso 
+    salió de cpu, se considera como si hubiera estado en running*/
+    // 5. Los procesos WAITING que terminaron su I/O Burst (Bi) pasan a READY.
+
     // aca de revisa si es tiempo de que llegue a la cola algun proceso
     int len = sizeof(lista_procesos)/sizeof(Process*);
     printf("------------------------review------------------\n");
@@ -281,6 +285,7 @@ int main(int argc, char **argv)
     }
     if (cpu==NULL)
     {
+      printf("No hay nada en Cpu\n");
       ingresar_cpu(linkedlist);
     }
     global_clock();
