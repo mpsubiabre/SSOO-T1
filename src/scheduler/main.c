@@ -167,7 +167,7 @@ void prioridad_procesos(Process *argv[], int j, LinkedList* linkedlist){
 
 // cuando CPU es null
 Process* ingresar_cpu(LinkedList* linkedlist, Process* cpu){
-  cpu->tiempo_entrada_waiting=0;
+  
   if (linkedlist->head ==NULL)
   {
     printf("No quedan elementos en la cola\n");
@@ -339,7 +339,7 @@ int main(int argc, char **argv)
     // 1. Revisar si hay algo en cpu
     if (cpu != NULL)
     {
-      printf("actualmente en la cpu esta el %s\n", cpu->name);
+      //printf("actualmente en la cpu esta el %s\n", cpu->name);
       cpu_estado(cpu);
     }
     // 2. Procesos creados entran en cola y tambien el que salio de cpu
