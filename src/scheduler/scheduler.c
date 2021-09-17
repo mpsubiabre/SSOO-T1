@@ -26,10 +26,10 @@ void append_first(LinkedList* linkedlist, Process* process){
     linkedlist->tail = process;
 }
 
-void print_linkedlist(LinkedList* linkedlist){
+void print_linkedlist(LinkedList* linkedlist, FILE* output){
     for (Process* current = linkedlist ->head; current; current=current ->next)
     {
-        printf("%s\n", current->name);
+        fprintf(output,"%s,%i,%i,%i,%i,%i\n", current->name, current->veces_elegido_cpu, current->veces_interrupcion_quantum,current->turnaround_time,current->response_time,current->wainting_time);
     }
 }
 
@@ -107,3 +107,4 @@ Process* delete_process_pachi(LinkedList* linkedlist ,Process* current){
     current->next = NULL;
     return current;
 }
+

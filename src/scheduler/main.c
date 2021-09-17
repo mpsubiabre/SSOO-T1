@@ -7,9 +7,7 @@
 #include "../file_manager/manager.h"
 #include "scheduler.h"
 //#include "../process/process.h"
-
-
-int Q = 100;//cambiar a variable de input!!!!!!!!!
+int Q;//cambiar a variable de input!!!!!!!!!
 int j = 0;
 int timer = 0;// variable global
 int total_factories = 0 ; 
@@ -475,6 +473,10 @@ int main(int argc, char **argv)
   InputFile *file = read_file("input.txt");
 
   //printf("Reading file of length %i:\n", file->len);
+  printf("Ingrese el valor de Q\n");
+  scanf("%d", &Q);
+  //int Q= atoi(Q);
+  printf("El valor de Q es %i\n",Q);
 
   Process* lista_procesos[file->len];
   Process* lista_procesos_entrando[file->len];
@@ -592,7 +594,8 @@ int main(int argc, char **argv)
     }
     /* 4. Se actualizan las estadisticas de los procesos. Si un proceso 
     salió de cpu, se considera como si hubiera estado en running*/
-    
+    // print_linkedlist(linkedlist, output_file);
+    // print_linkedlist(terminados, output_file);
     // 5. Los procesos WAITING que terminaron su I/O Burst (Bi) pasan a READY.
     waiting_to_ready(linkedlist);
     if(finish==len){
@@ -600,6 +603,7 @@ int main(int argc, char **argv)
     }
     global_clock();
   } 
+  // fclose(output_file);
 }
 
 
