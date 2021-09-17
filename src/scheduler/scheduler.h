@@ -18,7 +18,7 @@ typedef struct linkedlist{
 LinkedList* linkedlist_init(int total_factories);
 void append_linkedlist(LinkedList* linkedlist, Process* process);
 void append_first(LinkedList* linkedlist, Process* process);
-void print_linkedlist(LinkedList* linkedlist);
+void print_linkedlist(LinkedList* linkedlist, FILE* output);
 void destroy_linkedlist(LinkedList* linkedlist);
 //Esta funcion elimina un proceso
 Process* delete_process_pachi(LinkedList* linkedlist ,Process* process);

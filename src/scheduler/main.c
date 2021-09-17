@@ -44,6 +44,7 @@ void calcular_quantum(LinkedList* linkedlist,Process* proceso){
   int id_fabrica = proceso->id_factory;
   int f_quantum = 0;
   int ni_quantum = linkedlist->f_en_cola[id_fabrica];
+  id_fabrica++;
   if (ni_quantum == 0){
     ni_quantum++;
   }
@@ -98,12 +99,14 @@ void prioridad_procesos(Process *argv[], int j, LinkedList* linkedlist){
     primero = true;
     append_first(linkedlist, argv[0]);
     numero_fabricas_cola ++;
+    argv[0]->turnaround_time=timer;
     linkedlist->f_en_cola[argv[0]->id_factory]++;
     linkedlist->lista_n_procesos_fabricas[argv[0]->id_factory]++;
   }
   else if( j == 1 && primero == true){
     append_linkedlist(linkedlist, argv[0]);
     numero_fabricas_cola ++;   
+    argv[0]->turnaround_time=timer;
     linkedlist->f_en_cola[argv[0]->id_factory]++;
     linkedlist->lista_n_procesos_fabricas[argv[0]->id_factory]++;
   }
@@ -113,6 +116,7 @@ void prioridad_procesos(Process *argv[], int j, LinkedList* linkedlist){
       if (argv[i]->state == WAITING){
         append_linkedlist(linkedlist, argv[i]);
         numero_fabricas_cola ++;
+        argv[i]->turnaround_time=timer;
         linkedlist->f_en_cola[argv[i]->id_factory]++;
         linkedlist->lista_n_procesos_fabricas[argv[i]->id_factory]++;
         count++;
@@ -128,6 +132,7 @@ void prioridad_procesos(Process *argv[], int j, LinkedList* linkedlist){
       if (argv[i]->state == READY && argv[i]->quantum == 0){
         append_linkedlist(linkedlist, argv[i]);
         numero_fabricas_cola ++;
+        argv[i]->turnaround_time=timer;
         linkedlist->f_en_cola[argv[i]->id_factory]++;
         linkedlist->f_en_cola[argv[i]->id_factory]++;
         linkedlist->lista_n_procesos_fabricas[argv[i]->id_factory]++;
@@ -188,9 +193,11 @@ void prioridad_procesos(Process *argv[], int j, LinkedList* linkedlist){
               if(primero == false){
                 primero = true;
                 append_first(linkedlist, lista_same_id_fabrica_0[j]);
+                argv[i]->turnaround_time=timer;
               }
               else{
                 append_linkedlist(linkedlist, lista_same_id_fabrica_0[j]);
+                argv[i]->turnaround_time=timer;
               }
               numero_fabricas_cola ++;
               linkedlist->f_en_cola[lista_same_id_fabrica_0[j]->id_factory]++;
@@ -212,9 +219,11 @@ void prioridad_procesos(Process *argv[], int j, LinkedList* linkedlist){
               if(primero == false){
                 primero = true;
                 append_first(linkedlist, lista_same_id_fabrica_1[j]);
+                lista_same_id_fabrica_1[j]->turnaround_time=timer;
               }
               else{
                 append_linkedlist(linkedlist, lista_same_id_fabrica_1[j]);
+                lista_same_id_fabrica_1[j]->turnaround_time=timer;
               }
               numero_fabricas_cola ++;
               linkedlist->f_en_cola[lista_same_id_fabrica_1[j]->id_factory]++;
@@ -236,9 +245,12 @@ void prioridad_procesos(Process *argv[], int j, LinkedList* linkedlist){
               if(primero == false){
                 primero = true;
                 append_first(linkedlist, lista_same_id_fabrica_2[j]);
+                lista_same_id_fabrica_2[j]->turnaround_time=timer;
+
               }
               else{
                 append_linkedlist(linkedlist, lista_same_id_fabrica_2[j]);
+                lista_same_id_fabrica_2[j]->turnaround_time=timer;
               }
               numero_fabricas_cola ++;
               linkedlist->f_en_cola[lista_same_id_fabrica_2[j]->id_factory]++;
@@ -259,9 +271,11 @@ void prioridad_procesos(Process *argv[], int j, LinkedList* linkedlist){
               if(primero == false){
                 primero = true;
                 append_first(linkedlist, lista_same_id_fabrica_3[j]);
+                lista_same_id_fabrica_3[j]->turnaround_time=timer;
               }
               else{
                 append_linkedlist(linkedlist, lista_same_id_fabrica_3[j]);
+                lista_same_id_fabrica_3[j]->turnaround_time=timer;
               }
               numero_fabricas_cola ++;
               linkedlist->f_en_cola[lista_same_id_fabrica_3[j]->id_factory]++;
@@ -296,10 +310,14 @@ Process* ingresar_cpu(LinkedList* linkedlist, Process* cpu){
     if(linkedlist->head == NULL){
       primero=false;
     }
+    cpu->veces_elegido_cpu++;
     cpu->state = RUNNING;
     printf("[t = %i] El proceso %s ha pasado a estad RUNNING\n", timer, cpu->name);
     //ingresar el tiempo en que entro a cpu
     cpu->t_entrada_cpu=timer;
+    if(cpu->response_time==0){
+      cpu->response_time=timer-cpu->turnaround_time;
+    }
     calcular_quantum(linkedlist, cpu);
     return cpu;
   }
@@ -314,6 +332,9 @@ Process* ingresar_cpu(LinkedList* linkedlist, Process* cpu){
       linkedlist->f_en_cola[id_fabrica_current]--;
       linkedlist->lista_n_procesos_fabricas[cpu->id_factory]--;
       cpu->state = RUNNING;
+      if(cpu->response_time==0){
+      cpu->response_time=timer-cpu->turnaround_time;}
+      cpu->veces_elegido_cpu++;
       printf("[t = %i] El proceso %s ha pasado a estad RUNNING\n", timer, cpu->name);
       cpu->t_entrada_cpu=timer;
       calcular_quantum(linkedlist, cpu);
@@ -341,6 +362,9 @@ void waiting_to_ready(LinkedList* linkedlist){
         printf("[t = %i] El proceso %s ha pasado a estado READY\n", timer, curr->name);
       } 
     }
+    if (curr->state==WAITING || curr->state==READY){
+      cpu->wainting_time++;
+    }
     curr=curr->next;
   }
 }
@@ -354,18 +378,23 @@ void cpu_estado(Process* cpu){
     if (cpu->puntero_rafaga + 1 == cpu->numero_rafagas){// es el ultimo ai por lo tanto termina
       printf("[t = %i] el proceso %s ha pasado a estado FINISH\n", timer, cpu->name);
       cpu->state = FINISHED;
+      int turn = cpu->turnaround_time;
+      cpu->turnaround_time=timer-turn;
       printf("[t = %i] Saldra de cpu_Estado el %s en estado %i\n", timer, cpu->name, cpu->state);
       finish++;
       return;
     }
     cpu->puntero_rafaga++;
     cpu->state = WAITING;
+    cpu->wainting_time++;
     cpu->tiempo_entrada_waiting=timer;
     printf("[t = %i] el proceso %s ha pasado a estado WAITING \n", timer, cpu->name);
   }
   //SE CONSUME QUANTUM
   else if(tiempo_en_cpu == cpu->quantum){
     cpu->state = READY;
+    cpu->wainting_time++;
+    cpu->veces_interrupcion_quantum++;
     //append_linkedlist(linkedlist, cpu);
     int delta = cpu->rafagas[cpu->puntero_rafaga] - cpu->quantum;
     cpu->delta = delta;
@@ -383,6 +412,7 @@ int main(int argc, char **argv)
   printf("Hello T2!\n");
 
   InputFile *file = read_file("input.txt");
+  FILE* outputfile = fopen("output_file.csv","w+");
 
   Process* lista_procesos[file->len];
   Process* lista_procesos_entrando[file->len];
@@ -468,7 +498,7 @@ int main(int argc, char **argv)
     }
     /* 4. Se actualizan las estadisticas de los procesos. Si un proceso 
     salió de cpu, se considera como si hubiera estado en running*/
-    
+    print_linkedlist(linkedlist, outputfile);
     // 5. Los procesos WAITING que terminaron su I/O Burst (Bi) pasan a READY.
     waiting_to_ready(linkedlist);
     if(finish==len){
@@ -476,6 +506,7 @@ int main(int argc, char **argv)
     }
     global_clock();
   } 
+  fclose(outputfile);
 }
 
 
