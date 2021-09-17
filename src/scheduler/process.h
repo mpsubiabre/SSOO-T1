@@ -30,6 +30,7 @@ struct process{
     int numero_ai;
     int numero_rafagas;
     int delta;
+    int tiempo_entrada_waiting;
     //tiempo en sistema inicio a fin
     int turnaround_time;
     // tiempo en ready y waiting
@@ -40,3 +41,4 @@ struct process{
 
 Process* process_init(int pid, char* name, int id_factory, int time_start);
 //void process_destroy(Process* process);
+void print_proces(Process* process, int timer);
