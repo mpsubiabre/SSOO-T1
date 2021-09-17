@@ -13,6 +13,11 @@ Process* process_init(int pid, char* name, int id_factory, int time_start){
     process->t_entrada_cpu = 0;
     process->puntero_rafaga = 0;
     process->tiempo_entrada_waiting = 0;
+    process->wainting_time=0;
+    process->turnaround_time=0;
+    process->veces_interrupcion_quantum=0;
+    process->veces_elegido_cpu=0;
+    process->response_time=0;
     return process;
 }
 

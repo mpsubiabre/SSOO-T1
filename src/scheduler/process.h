@@ -35,6 +35,7 @@ struct process{
     int turnaround_time;
     // tiempo en ready y waiting
     int wainting_time;
+    int response_time;
 
     int rafagas[9999];
 };
