@@ -41,3 +41,4 @@ struct process{
 
 Process* process_init(int pid, char* name, int id_factory, int time_start);
 //void process_destroy(Process* process);
+void print_proces(Process* process, int timer);
